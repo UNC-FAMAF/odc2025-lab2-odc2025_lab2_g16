@@ -142,6 +142,101 @@ fin_circulo:
 	// efectivamente, su valor representará si GPIO 2 está activo
 	//lsr w11, w11, 1
 
+ /*
+ .equ SCREEN_WIDTH,    640
+.equ SCREEN_HEIGH,    480
+.equ BITS_PER_PIXEL,  32
+
+.globl main
+
+main:
+    // x0 contiene la dirección base del framebuffer (por convención)
+    mov x20, x0                // guardar framebuffer base en x20
+
+    //---------------- CODE HERE ------------------------------------
+    mov x1, SCREEN_WIDTH
+    mov x2, SCREEN_HEIGH
+    mov x3, 0x0034             // color negro
+    mov x4, x20                // puntero actual
+
+fondo_loop_y:
+    cmp x2, 0
+    beq fondo_fin
+
+    mov x1, SCREEN_WIDTH
+fondo_loop_x:
+    cmp x1, 0
+    beq siguiente_fila
+
+    str w3, [x4]
+    add x4, x4, 4              // siguiente pixel
+    sub x1, x1, 1
+    b fondo_loop_x
+
+siguiente_fila:
+    sub x2, x2, 1
+    b fondo_loop_y
+
+fondo_fin:
+    bl circulo                 // dibujar el círculo
+    b InfLoop
+circulo:
+    mov x10, 320     // centroX
+    mov x11, 240     // centroY
+    mov x12, 150     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    mov x15, 0x2d00    // color
+
+    mov x1, 0              // y = 0
+cicloY:
+    cmp x1, x14
+    bge finCirculo
+
+    mov x2, 0              // x = 0
+cicloX:
+    cmp x2, x13
+    bge finFila
+
+    // dx = x - centroX
+    sub x3, x2, x10
+    // dy = y - centroY
+    sub x4, x1, x11
+    // dx^2
+    mul x3, x3, x3
+    // dy^2
+    mul x4, x4, x4
+    // distancia² = dx^2 + dy^2
+    add x5, x3, x4
+
+    // radio²
+    mul x6, x12, x12
+    cmp x5, x6
+    bgt noPintar
+
+    // offset = (y * width + x) * 4
+    mul x7, x1, x13
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4 porque 32 bits por pixel
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pintar pixel (blanco)
+
+noPintar:
+    add x2, x2, 1
+    b cicloX
+
+finFila:
+    add x1, x1, 1
+    b cicloY
+
+finCirculo:
+    ret
+InfLoop:
+    b InfLoop
+*/
+
 	//---------------------------------------------------------------
 	// Infinite Loop
 
