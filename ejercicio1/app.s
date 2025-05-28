@@ -13,8 +13,8 @@ main:
  	mov x20, x0	// Guarda la dirección base del framebuffer en x20
 	//---------------- CODE HERE ------------------------------------
 
-	movz x10, 0x00, lsl 16
-	movk x10, 0x0099, lsl 00
+	movz x10, 0x0033, lsl 16
+	movk x10, 0x0066, lsl 00
 
 	mov x2, SCREEN_HEIGH         // Y Size
 loop1:
@@ -32,18 +32,18 @@ loop0:
 /* parametros, x12 alto, x14 ancho, x13 pixel x, x11 pixel y*/
 dibujar_rectangulo:
   mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
-  movz x10, 0xffff, lsl 16 // color
-  movk x10, 0x3399, lsl 00 // color
+  movz x10, 0xffc0, lsl 16 // color
+  movk x10, 0xc0c0, lsl 00 // color
   
-  mov x11, 0 // aqui va el pixel y inicial
-  mov x12, 200 // alto deseado
+  mov x11, 200 // aqui va el pixel y inicial
+  mov x12, 8 // alto deseado
 
 rect_y_loop:
   cmp x12, 0
   beq fin_rect
 
-  mov x13, 320 // aqui va el pixel x inicial
-  mov x14, 50 // ancho deseado 
+  mov x13, 80 // aqui va el pixel x inicial
+  mov x14, 480 // ancho deseado 
 
 rect_x_loop:
   // offset = ((x * SCREEN_W)+x) * 4
@@ -144,7 +144,7 @@ fin_circulo:
 	// efectivamente, su valor representará si GPIO 2 está activo
 	//lsr w11, w11, 1
 
-
+/*
 circulo:
     mov x10, 100     // centroX
     mov x11, 150     // centroY
@@ -197,6 +197,7 @@ finFila:
     b cicloY
 
 finCirculo:
+*/
 	//---------------------------------------------------------------
 	// Infinite Loop
 
