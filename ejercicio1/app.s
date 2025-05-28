@@ -200,6 +200,82 @@ finCirculo:
 */
 	//---------------------------------------------------------------
 	// Infinite Loop
+ 
+seteo_rombo:
+//todo menos x4 puede cambiarse a conveniencia
+/*
+memorias temporales utilizadas: x4, x6, x11, x17, x18, x19, x21, x22 y x23 
+(x11 es el color utilizado) 
+(x17 y x18 son SCREEN_WIDTH y SCREEN_HEIGH respectivamente)
+*/
+	mov x4, 0     //x4 es usado para decidir que parte del rombo falta
+	mov x1, 320   //posicion del rombo en el eje X
+	mov x19, 100  //x19 decide el tamaño del rombo
+	mov x2, 240   //posicion del rombo en el eje Y
+	b rombo
+ 
+limite:
+	//usando x6 para crear el limite de la fila
+	mul x6, x23, x17
+	add x6, x6, x21
+	lsl x6, x6, 2
+	add x6, x6, x20
+
+	//actualizando x0 con los datos actuales de limites (punto a y eje Y)
+	mul x0, x23, x17
+	add x0, x0, x22
+	lsl x0, x0, 2
+	add x0, x0, x20
+
+	//decidiendo a que parte del rombo ir
+	cmp x4, 1
+	beq semirombo1
+	cmp x4, 2
+	beq semirombo2
+ 
+rombo:
+	add x21, x1, x19  //punto B
+	sub x22, x1, x19  //punto A
+	sub x23, x18, x2  //preparando eje y para el calculo de direccion
+	mul x0, x23, x17
+	add x0, x0, x22
+	lsl x0, x0, 2
+	add x0, x0, x20
+	add x4, x4, 1     //pasando al siguiente paso del rombo
+	b limite
+ 
+semirombo1:
+	stur w11, [x0]    //cambiar a color de preferencia
+	add x0, x0, 4
+	cmp x0, x6
+	ble semirombo1
+
+	//actualizando datos para los limites
+	add x22, x22, 1
+	sub x21, x21, 1
+	sub x23, x23, 1
+
+	//decidiendo si pasar a la siguiente fila o ir al siguiente paso
+	cmp x22, x1
+	ble limite
+	b rombo
+ 
+semirombo2:
+	stur w11, [x0]   //cambiar a color de preferencia
+	add x0, x0, 4
+	cmp x0, x6
+	ble semirombo2
+
+	//actualizando datos para los limites
+	add x22, x22, 1
+	sub x21, x21, 1
+	add x23, x23, 1
+
+	//decidiendo si pasar a la siguiente fila o ir al siguiente paso
+	cmp x22, x1
+	ble limite
+	mov x4, 0   //reseteando x4 para preparar un proximo rombo
+	b InfLoop   //final de la funcion
 
 InfLoop:
 	b InfLoop
