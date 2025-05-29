@@ -2,12 +2,13 @@
 	.equ SCREEN_HEIGH, 		480
 	.equ BITS_PER_PIXEL,  	32
   
-  .equ GREY, 0xa0a0a0
 	.equ GPIO_BASE,      0x3f200000
 	.equ GPIO_GPFSEL0,   0x00
 	.equ GPIO_GPLEV0,    0x34
 
-	.globl main
+  .globl main
+  .extern nube_chica
+
 
 main:
 	// x0 contiene la direccion base del framebuffer
@@ -28,23 +29,18 @@ loop0:
 	sub x2,x2,1	   // Decrementar contador Y
 	cbnz x2,loop1  // Si no es la última fila, salto
 
-nubes:
-  
-  // param
+nubeChica:
   movz x10, 0xa0, lsl 16
-  movk x10, 0xa0a0, lsl 00 // color
-  mov x5, 300 // x
-  mov x6, 15 // widthR
-  mov x7, 40 // y
-  mov x8, 4 // heightR
+  movk x10, 0xa0a0, lsl 00
+  mov x7, 320
+  mov x8, 240
 
+  mul x9, x8, x1        
+  add x9, x9, x7        
+  lsl x9, x9, 2         
+  add x3, x20, x9       
+  bl nube_chica
 
-mover_nube:
-  bl rectangulo
-  sub x5, x5, 1
-  sub x6, x6, 1
-  sub x7, x7, 1
-  sub x8, x8, 1
 	//---------------------------------------------------------------
 	// Infinite Loop
 
