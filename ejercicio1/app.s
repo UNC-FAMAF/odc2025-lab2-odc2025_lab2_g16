@@ -29,7 +29,8 @@ loop0:
 
 
 // DIBUJAR RECTANGULO
-/* parametros, x12 alto, x14 ancho, x13 pixel x, x11 pixel y*/
+/* parametros, x12 alto, x14 ancho, x13 pixel x, x11 pixel y */
+
 dibujar_rectangulo:
   mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
   movz x10, 0xffc0, lsl 16 // color
@@ -38,37 +39,42 @@ dibujar_rectangulo:
   mov x11, 200 // aqui va el pixel y inicial
   mov x12, 8 // alto deseado
 
-rect_y_loop:
-  cmp x12, 0
-  beq fin_rect
+rectangulo_alto_loop:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_rectangulo
 
   mov x13, 80 // aqui va el pixel x inicial
   mov x14, 480 // ancho deseado 
 
-rect_x_loop:
-  // offset = ((x * SCREEN_W)+x) * 4
+rectangulo_fila_loop:
+  // direccion = dInicio + 4 * (x+(y*640)) 
   mov x15, x11
   mul x15, x15, x1
   add x15, x15, x13
 
   lsl x15, x15, 2
-
+  
+  //aca se pinta el pixel en la direccion x15
   add x15, x20, x15
   stur w10, [x15]
-
+  
+  //avanzo un pixel
   add x13, x13, 1
+  //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0) 
   sub x14, x14, 1
-  cbnz x14, rect_x_loop
+  // mientras haya pixeles para pintar continuo en la fila 
+  cbnz x14, rectangulo_fila_loop
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b rectangulo_alto_loop
 
-  add x11, x11, 1
-  sub x12, x12, 1
-  b rect_y_loop
+fin_rectangulo:
 
-fin_rect:
+// INTENTO DE CIRCULO (SIRVE PARA HACER TRAPECIOS Y TRIANGULOS) 
 
-// INTENTO DE CIRCULO (QUIZAS SIRVA PARA TRIANGULO)
+
 /*
-
 dibujarCirculo:
   movz x10, 0xff80, lsl 16
   movk x10, 0xff00, lsl 00 // color verde
@@ -197,17 +203,18 @@ finFila:
     b cicloY
 
 finCirculo:
-*/
-	//---------------------------------------------------------------
-	// Infinite Loop
- 
+
+
+//ROMBO
 seteo_rombo:
-//todo menos x4 puede cambiarse a conveniencia
+//todoo menos x4 puede cambiarse a conveniencia
+
 /*
 memorias temporales utilizadas: x4, x6, x11, x17, x18, x19, x21, x22 y x23 
-(x11 es el color utilizado) 
-(x17 y x18 son SCREEN_WIDTH y SCREEN_HEIGH respectivamente)
-*/
+(x11 es el color utilizado)
+(x17 y x18 son SCREEN_WIDTH y SCREEN_HEIGH respectivamente)*/ 
+  mov x17, SCREEN_WIDTH
+  mov x18, SCREEN_HEIGH
 	mov x4, 0     //x4 es usado para decidir que parte del rombo falta
 	mov x1, 320   //posicion del rombo en el eje X
 	mov x19, 100  //x19 decide el tamaño del rombo
