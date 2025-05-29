@@ -289,7 +289,7 @@ semirombo2:
     mov x20, x0                // guardar framebuffer base en x20
 
 //LUNA
-    mov x1, SCREEN_WIDTH
+/*    mov x1, SCREEN_WIDTH
     mov x2, SCREEN_HEIGH
     mov x3, 0x0034             // color negro
     mov x4, x20                // puntero actual
@@ -409,5 +409,6 @@ finFila2:
     b cicloY2
 
 finLuna2:
+*/
 InfLoop:
 	b InfLoop
