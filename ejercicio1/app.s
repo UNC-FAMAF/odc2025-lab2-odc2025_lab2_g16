@@ -284,6 +284,130 @@ semirombo2:
 	ble limite
 	mov x4, 0   //reseteando x4 para preparar un proximo rombo
 	b InfLoop   //final de la funcion
+ 
+ // x0 contiene la dirección base del framebuffer (por convención)
+    mov x20, x0                // guardar framebuffer base en x20
 
+//LUNA
+    mov x1, SCREEN_WIDTH
+    mov x2, SCREEN_HEIGH
+    mov x3, 0x0034             // color negro
+    mov x4, x20                // puntero actual
+
+fondo_loop_y:
+    cmp x2, 0   // alto = 0
+    beq fondo_fin 
+
+    mov x1, SCREEN_WIDTH   
+fondo_loop_x:
+    cmp x1, 0   // ancho = 0
+    beq siguiente_fila
+
+    str w3, [x4]   
+    add x4, x4, 4	// siguiente pixel
+    sub x1, x1, 1		
+    b fondo_loop_x
+
+siguiente_fila:
+    sub x2, x2, 1   // altura -= 1
+    b fondo_loop_y
+
+fondo_fin:
+    bl Luna1                 // dibujar el círculo
+    b InfLoop
+    
+Luna1:
+    mov x10, 560     // centroX
+    mov x11, 80     // centroY
+    mov x12, 50     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    mov x15, 0xFFFFFF    // color
+
+    mov x1, 0     // y = 0
+cicloY:
+    cmp x1, x14   // ancho >= alto
+    bge finLuna1
+
+    mov x2, 0     // x = 0
+cicloX:
+    cmp x2, x13   // comparo x con ancho
+    bge finFila
+
+    sub x3, x2, x10 // dx = x - centroX
+    sub x4, x1, x11 // dy = y - centroY
+    mul x3, x3, x3 // dx^2
+    mul x4, x4, x4 // dy^2
+    add x5, x3, x4 // distancia² = dx^2 + dy^2
+
+    mul x6, x12, x12 // radio²
+    cmp x5, x6 // distancia² > radio²
+    bgt noPintar
+
+    // offset = (y * width + x) * 4
+    mul x7, x1, x13
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4 porque 32 bits por pixel
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pintar pixel (blanco)
+
+noPintar:
+    add x2, x2, 1	// x + 1
+    b cicloX
+
+finFila:
+    add x1, x1, 1	// y + 1
+    b cicloY
+
+finLuna1:
+
+Luna2:
+    mov x10, 540     // centroX
+    mov x11, 95     // centroY
+    mov x12, 40     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    mov x15, 0x0034    // color
+
+    mov x1, 0     // y = 0
+cicloY2:
+    cmp x1, x14   // ancho >= alto
+    bge finLuna2
+
+    mov x2, 0     // x = 0
+cicloX2:
+    cmp x2, x13
+    bge finFila2
+
+    sub x3, x2, x10 // dx = x - centroX
+    sub x4, x1, x11 // dy = y - centroY
+    mul x3, x3, x3 // dx^2
+    mul x4, x4, x4 // dy^2
+    add x5, x3, x4 // distancia² = dx^2 + dy^2
+
+    mul x6, x12, x12 // radio²
+    cmp x5, x6 // distancia² > radio²
+    bgt noPintar2
+
+    // offset = (y * width + x) * 4
+    mul x7, x1, x13
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4 porque 32 bits por pixel
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pintar pixel (blanco)
+
+noPintar2:
+    add x2, x2, 1
+    b cicloX2
+
+finFila2:
+    add x1, x1, 1
+    b cicloY2
+
+finLuna2:
 InfLoop:
 	b InfLoop
