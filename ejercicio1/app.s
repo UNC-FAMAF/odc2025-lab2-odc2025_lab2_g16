@@ -212,15 +212,27 @@ seteo_rombo:
 /*
 memorias temporales utilizadas: x4, x6, x11, x17, x18, x19, x21, x22 y x23 
 (x11 es el color utilizado)
-(x17 y x18 son SCREEN_WIDTH y SCREEN_HEIGH respectivamente)*/ 
-  mov x17, SCREEN_WIDTH
-  mov x18, SCREEN_HEIGH
+(x17 y x18 son SCREEN_WIDTH y SCREEN_HEIGH respectivamente)
+*/ 
+  	mov x17, SCREEN_WIDTH
+  	mov x18, SCREEN_HEIGH
 	mov x4, 0     //x4 es usado para decidir que parte del rombo falta
 	mov x1, 320   //posicion del rombo en el eje X
 	mov x19, 100  //x19 decide el tamaño del rombo
 	mov x2, 240   //posicion del rombo en el eje Y
 	b rombo
  
+rombo:
+	add x21, x1, x19  //punto B
+	sub x22, x1, x19  //punto A
+	sub x23, x18, x2  //preparando eje y para el calculo de direccion
+	mul x0, x23, x17
+	add x0, x0, x22
+	lsl x0, x0, 2
+	add x0, x0, x20
+	add x4, x4, 1     //pasando al siguiente paso del rombo
+	b limite
+
 limite:
 	//usando x6 para crear el limite de la fila
 	mul x6, x23, x17
@@ -239,17 +251,6 @@ limite:
 	beq semirombo1
 	cmp x4, 2
 	beq semirombo2
- 
-rombo:
-	add x21, x1, x19  //punto B
-	sub x22, x1, x19  //punto A
-	sub x23, x18, x2  //preparando eje y para el calculo de direccion
-	mul x0, x23, x17
-	add x0, x0, x22
-	lsl x0, x0, 2
-	add x0, x0, x20
-	add x4, x4, 1     //pasando al siguiente paso del rombo
-	b limite
  
 semirombo1:
 	stur w11, [x0]    //cambiar a color de preferencia
