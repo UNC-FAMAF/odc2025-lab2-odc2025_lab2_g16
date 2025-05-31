@@ -140,7 +140,6 @@ finFila:
     b cicloY
 
 finCirculo:
-  b InfLoop
 	//---------------------------------------------------------------
 	// Infinite Loop
 
@@ -223,17 +222,14 @@ semirombo2:
 	cmp x22, x1
 	ble limite
 	mov x4, 0   //reseteando x4 para preparar un proximo rombo
-	b InfLoop   //final de la funcion
  
- // x0 contiene la dirección base del framebuffer (por convención)
-    mov x20, x0                // guardar framebuffer base en x20
 
 //LUNA
-/*    mov x1, SCREEN_WIDTH
+    mov x1, SCREEN_WIDTH
     mov x2, SCREEN_HEIGH
     mov x3, 0x0034             // color negro
     mov x4, x20                // puntero actual
-
+/*
 fondo_loop_y:
     cmp x2, 0   // alto = 0
     beq fondo_fin 
@@ -255,7 +251,7 @@ siguiente_fila:
 fondo_fin:
     bl Luna1                 // dibujar el círculo
     b InfLoop
-    
+*/    
 Luna1:
     mov x10, 560     // centroX
     mov x11, 80     // centroY
@@ -266,14 +262,14 @@ Luna1:
     mov x15, 0xFFFFFF    // color
 
     mov x1, 0     // y = 0
-cicloY:
+cicloY1:
     cmp x1, x14   // ancho >= alto
     bge finLuna1
 
     mov x2, 0     // x = 0
-cicloX:
+cicloX1:
     cmp x2, x13   // comparo x con ancho
-    bge finFila
+    bge finFila1
 
     sub x3, x2, x10 // dx = x - centroX
     sub x4, x1, x11 // dy = y - centroY
@@ -283,7 +279,7 @@ cicloX:
 
     mul x6, x12, x12 // radio²
     cmp x5, x6 // distancia² > radio²
-    bgt noPintar
+    bgt noPintarLuna
 
     // offset = (y * width + x) * 4
     mul x7, x1, x13
@@ -293,13 +289,13 @@ cicloX:
 
     str w15, [x8]         // pintar pixel (blanco)
 
-noPintar:
+noPintarLuna:
     add x2, x2, 1	// x + 1
-    b cicloX
+    b cicloX1
 
-finFila:
+finFila1:
     add x1, x1, 1	// y + 1
-    b cicloY
+    b cicloY1
 
 finLuna1:
 
@@ -349,6 +345,6 @@ finFila2:
     b cicloY2
 
 finLuna2:
-*/
+
 InfLoop:
 	b InfLoop
