@@ -346,5 +346,447 @@ finFila2:
 
 finLuna2:
 
+// Dibujar 2025
+
+// DIBUJO DEL 0
+
+Cero_contorno:
+    mov x10, 325     // centroX
+    mov x11, 425     // centroY
+    mov x12, 30     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    movz x15, 0xAA00, lsl 16 // color
+    movk x15, 0xFFBB, lsl 00 // color
+    
+    mov x1, 0     // y = 0
+cicloY_01:
+    cmp x1, x14   // ancho >= alto
+    bge fin_cero_contorno
+
+    mov x2, 0     // x = 0
+cicloX_01:
+    cmp x2, x13
+    bge finFila01
+
+    sub x3, x2, x10 // dx = x - centroX
+    sub x4, x1, x11 // dy = y - centroY
+    mul x3, x3, x3 // dx^2
+    mul x4, x4, x4 // dy^2
+    add x5, x3, x4 // distancia² = dx^2 + dy^2
+
+    mul x6, x12, x12 // radio²
+    cmp x5, x6 // distancia² > radio²
+    bgt noPintar01
+
+    // offset = (y * width + x) * 4
+    mul x7, x1, x13
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4 porque 32 bits por pixel
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pintar pixel (verde claro)
+
+noPintar01:
+    add x2, x2, 1
+    b cicloX_01
+
+finFila01:
+    add x1, x1, 1
+    b cicloY_01
+
+fin_cero_contorno:
+
+Cero_interior:
+    mov x10, 325     // centroX
+    mov x11, 425     // centroY
+    mov x12, 20     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    movz x15, 0x0033, lsl 16 // color
+    movk x15, 0x0066, lsl 00 // color
+    
+    mov x1, 0     // y = 0
+cicloY_02:
+    cmp x1, x14   // ancho >= alto
+    bge fin_cero_interior
+
+    mov x2, 0     // x = 0
+cicloX_02:
+    cmp x2, x13
+    bge finFila02
+
+    sub x3, x2, x10 // dx = x - centroX
+    sub x4, x1, x11 // dy = y - centroY
+    mul x3, x3, x3 // dx^2
+    mul x4, x4, x4 // dy^2
+    add x5, x3, x4 // distancia² = dx^2 + dy^2
+
+    mul x6, x12, x12 // radio²
+    cmp x5, x6 // distancia² > radio²
+    bgt noPintar02
+
+    // offset = (y * width + x) * 4
+    mul x7, x1, x13
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4 porque 32 bits por pixel
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pintar pixel (verde claro)
+
+noPintar02:
+    add x2, x2, 1
+    b cicloX_02
+
+finFila02:
+    add x1, x1, 1
+    b cicloY_02
+
+fin_cero_interior:
+
+
+/* parametros, x12 alto, x14 ancho, x13 pixel x, x11 pixel y */
+
+// DIBUJO PRIMER 2
+
+primer_2:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0xAA00, lsl 16 // color
+  movk x10, 0xFFBB, lsl 00 // color
+  
+  mov x11, 390 // aqui va el pixel y inicial
+  mov x12, 70 // alto deseado
+
+rectangulo_alto_loop:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_primer_2
+
+  mov x13, 260 // aqui va el pixel x inicial
+  mov x14, 30 // ancho deseado 
+
+rectangulo_fila_loop:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, rectangulo_fila_loop // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b rectangulo_alto_loop
+
+fin_primer_2:
+
+cuadrado_aux_1a:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0x0033, lsl 16 // color
+  movk x10, 0x0066, lsl 00 // color
+  
+  mov x11, 400 // aqui va el pixel y inicial
+  mov x12, 20 // alto deseado
+
+cuadrado_1a_alto_loop:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_cuadrado_aux_1a
+
+  mov x13, 260 // aqui va el pixel x inicial
+  mov x14, 20 // ancho deseado 
+
+cuadrado_1a_fila_loop:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, cuadrado_1a_fila_loop // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b cuadrado_1a_alto_loop
+
+fin_cuadrado_aux_1a:
+
+cuadrado_aux_1b:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0x0033, lsl 16 // color
+  movk x10, 0x0066, lsl 00 // color
+  
+  mov x11, 430 // aqui va el pixel y inicial
+  mov x12, 20 // alto deseado
+
+cuadrado_1b_alto_loop:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_cuadrado_aux_1b
+
+  mov x13, 270 // aqui va el pixel x inicial
+  mov x14, 20 // ancho deseado 
+
+cuadrado_1b_fila_loop:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, cuadrado_1b_fila_loop // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b cuadrado_1b_alto_loop
+
+fin_cuadrado_aux_1b:
+
+// DIBUJO SEGUNDO 2
+
+segundo_2:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0x0000, lsl 16 // color
+  movk x10, 0xFFBB, lsl 00 // color
+  
+  mov x11, 390 // aqui va el pixel y inicial
+  mov x12, 70 // alto deseado
+
+rectangulo_alto_loop2:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_segundo_2
+
+  mov x13, 360 // aqui va el pixel x inicial
+  mov x14, 30 // ancho deseado 
+
+rectangulo_fila_loop2:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, rectangulo_fila_loop2 // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b rectangulo_alto_loop2
+
+fin_segundo_2:
+
+cuadrado_aux_2a:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0x0033, lsl 16 // color
+  movk x10, 0x0066, lsl 00 // color
+  
+  mov x11, 400 // aqui va el pixel y inicial
+  mov x12, 20 // alto deseado
+
+cuadrado_2a_alto_loop:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_cuadrado_aux_2a
+
+  mov x13, 360 // aqui va el pixel x inicial
+  mov x14, 20 // ancho deseado 
+
+cuadrado_2a_fila_loop:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, cuadrado_2a_fila_loop // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b cuadrado_2a_alto_loop
+
+fin_cuadrado_aux_2a:
+
+cuadrado_aux_2b:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0x0033, lsl 16 // color
+  movk x10, 0x0066, lsl 00 // color
+  
+  mov x11, 430 // aqui va el pixel y inicial
+  mov x12, 20 // alto deseado
+
+cuadrado_2b_alto_loop:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_cuadrado_aux_2b
+
+  mov x13, 370 // aqui va el pixel x inicial
+  mov x14, 20 // ancho deseado 
+
+cuadrado_2b_fila_loop:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, cuadrado_2b_fila_loop // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b cuadrado_2b_alto_loop
+
+fin_cuadrado_aux_2b:
+
+// DIBUJO DEL 5
+
+dibujo_5:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0x0000, lsl 16 // color
+  movk x10, 0xFFBB, lsl 00 // color
+  
+  mov x11, 390 // aqui va el pixel y inicial
+  mov x12, 70 // alto deseado
+
+rectangulo_alto_loop5:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_dibujo_5
+
+  mov x13, 400 // aqui va el pixel x inicial
+  mov x14, 30 // ancho deseado 
+
+rectangulo_fila_loop5:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, rectangulo_fila_loop5 // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b rectangulo_alto_loop5
+
+fin_dibujo_5:
+
+cuadrado_aux_3a:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0x0033, lsl 16 // color
+  movk x10, 0x0066, lsl 00 // color
+  
+  mov x11, 400 // aqui va el pixel y inicial
+  mov x12, 20 // alto deseado
+
+cuadrado_3a_alto_loop:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_cuadrado_aux_3a
+
+  mov x13, 410 // aqui va el pixel x inicial
+  mov x14, 20 // ancho deseado 
+
+cuadrado_3a_fila_loop:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, cuadrado_3a_fila_loop // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b cuadrado_3a_alto_loop
+
+fin_cuadrado_aux_3a:
+
+cuadrado_aux_3b:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0x0033, lsl 16 // color
+  movk x10, 0x0066, lsl 00 // color
+  
+  mov x11, 430 // aqui va el pixel y inicial
+  mov x12, 20 // alto deseado
+
+cuadrado_3b_alto_loop:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_cuadrado_aux_3b
+
+  mov x13, 400 // aqui va el pixel x inicial
+  mov x14, 20 // ancho deseado 
+
+cuadrado_3b_fila_loop:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  add x13, x13, 1  //avanzo un pixel
+  sub x14, x14, 1 //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0)
+  cbnz x14, cuadrado_3b_fila_loop // mientras haya pixeles para pintar continuo en la fila
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b cuadrado_3b_alto_loop
+
+fin_cuadrado_aux_3b:
+
 InfLoop:
 	b InfLoop
