@@ -32,25 +32,35 @@ loop0:
 //NUBES
   mov x1, SCREEN_WIDTH
   mov x2, SCREEN_HEIGH
-  mov x3, 320 //posicion inicial pixel x
+  mov x3, 0 //posicion inicial pixel x
   mov x4, 240 //"" pixel y
   mov x5, 20 //heigh rect
   mov x6, 30 //width rect
-  mov x30, 40000 //delay
-  movz x10, 0xa0, lsl 16
-  movk x10, 0xa0a0, lsl 00
-
+  mov x30, 0 //delay
 
 loopNube:
-  bl limpiar_fondo
-  bl dibujar_nube
+    // 1. Borrar nube anterior
+    movz x10, 0x33, lsl 16   // color cielo
+    movk x10, 0x99ff, lsl 0
+    bl rectangulo
 
-  // actualizar x de la nube
-  sub x3, x3, 1     
-  bl delay
-  mov x30, 1000
-  bl delay
-  cbnz x3, loopNube
+    // 2. Actualizar x
+    add x3, x3, 20
+
+    // 3. Dibujar nube nueva
+    movz x10, 0xa0, lsl 16   // gris
+    movk x10, 0xa0a0, lsl 0
+    bl rectangulo
+
+    // 4. Delay
+    bl delay
+
+    // 5. Condición de salida
+    cmp x3, SCREEN_WIDTH
+    b.lt loopNube
+    
+    mov x3, 0
+    b loopNube
 
 InfLoop:
 	b InfLoop

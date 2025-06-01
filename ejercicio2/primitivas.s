@@ -11,7 +11,6 @@
 rectangulo:
   mov x11, x4       // fila actual (Y)
   mov x12, x5       // alto restante
-
 rectangulo_alto_loop:
   cmp x12, 0
   beq fin_rectangulo
@@ -40,14 +39,11 @@ fin_rectangulo:
   ret
 
 delay:
-  cbz x30, fin_delay 
-
+    movz x9, 0xff, lsl 16    
 delay_loop:
-  subs x30, x30, 1  
-  bne delay_loop        
-
-fin_delay:
-  ret
+    subs x9, x9, 1
+    b.ne delay_loop
+    ret
 
 limpiar_fondo:
   movz x10, 0x33, lsl 16    // azul claro
@@ -73,17 +69,19 @@ dibujar_nube:
   // Color blanco grisáceo para la nube
   movz x10, 0xffff, lsl 16
   movk x10, 0xf0f0, lsl 0
-
+  //mov x30, 4
   // Primer rectángulo (arriba): más corto
-  mov x5, 10      // altura
-  mov x6, 20      // ancho
-  bl rectangulo
+  //mov x5, 10      // altura
+  //mov x6, 20      // ancho
+  //bl rectangulo
 
   // Segundo rectángulo (abajo): más largo
-  add x4, x4, 10  // bajamos 10 píxeles (altura del rectángulo de arriba)
-  sub x3, x3, 4   // lo hacemos empezar un poco antes (más ancho)
-  mov x5, 10      // altura
-  mov x6, 28      // ancho
+  //add x4, x4, 10  // bajamos 10 píxeles (altura del rectángulo de arriba)
+  //sub x3, x3, 4   // lo hacemos empezar un poco antes (más ancho)
+  //mov x5, 10      // altura
+  //mov x6, 28      // ancho
+  
+  //br delay
   bl rectangulo
 
   ret
