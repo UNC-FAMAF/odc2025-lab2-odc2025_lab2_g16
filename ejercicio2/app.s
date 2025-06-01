@@ -9,58 +9,74 @@
   .globl main
   .extern nube_chica
 
-
 main:
-	// x0 contiene la direccion base del framebuffer
- 	mov x20, x0	// Guarda la dirección base del framebuffer en x20
-	//---------------- CODE HERE ------------------------------------
-
-	movz x10, 0x33, lsl 16
-	movk x10, 0x99ff, lsl 00
-
-	mov x2, SCREEN_HEIGH         // Y Size
-loop1:
-	mov x1, SCREEN_WIDTH         // X Size
-loop0:
-	stur w10,[x0]  // Colorear el pixel N
-	add x0,x0,4	   // Siguiente pixel
-	sub x1,x1,1	   // Decrementar contador X
-	cbnz x1,loop0  // Si no terminó la fila, salto
-	sub x2,x2,1	   // Decrementar contador Y
-	cbnz x2,loop1  // Si no es la última fila, salto
-
-//NUBES
-  mov x1, SCREEN_WIDTH
-  mov x2, SCREEN_HEIGH
-  mov x3, 0 //posicion inicial pixel x
-  mov x4, 240 //"" pixel y
-  mov x5, 20 //heigh rect
-  mov x6, 30 //width rect
-  mov x30, 0 //delay
-
-loopNube:
-    // 1. Borrar nube anterior
-    movz x10, 0x33, lsl 16   // color cielo
-    movk x10, 0x99ff, lsl 0
-    bl rectangulo
-
-    // 2. Actualizar x
-    add x3, x3, 20
-
-    // 3. Dibujar nube nueva
-    movz x10, 0xa0, lsl 16   // gris
-    movk x10, 0xa0a0, lsl 0
-    bl rectangulo
-
-    // 4. Delay
-    bl delay
-
-    // 5. Condición de salida
-    cmp x3, SCREEN_WIDTH
-    b.lt loopNube
+    mov x22, 333 // x arbol
+    mov x21, 23 // x nube
     
-    mov x3, 0
-    b loopNube
+loopMain:
+    mov x20, x0
+    movz x10, 0x33, lsl 16
+    movk x10, 0x99ff, lsl 00
+    mov x2, SCREEN_HEIGH
+loop1:
+    mov x1, SCREEN_WIDTH
+loop0:
+    stur w10,[x20]
+    add x20, x20, 4
+    sub x1, x1, 1
+    cbnz x1, loop0
+    sub x2, x2, 1
+    cbnz x2, loop1
 
+    // CAMPO VERDE
+    // un rectangulo que simula un campo
+    mov x1, SCREEN_WIDTH
+    mov x2, SCREEN_HEIGH
+    mov x3, 0
+    mov x4, 319
+    mov x5, 179
+    mov x6, 640
+    movz x10, 0x80, lsl 16 // color
+    movk x10, 0xff00, lsl 0
+    bl rectangulo
+
+    // ------------ ARBOL ------------
+    mov x3, x21       
+    mov x4, 300 // y arbol
+    mov x5, 80 // alt
+    mov x6, 10 // ancho
+    movz x10, 0x99, lsl 16
+    movk x10, 0x4c00, lsl 0
+    bl rectangulo
+
+    // ------------ NUBE ------------
+    mov x3, x22       
+    mov x4, 299 // y nube
+    mov x5, 20 //alt 
+    mov x6, 60 // ancho
+
+    movz x10, 0xa0, lsl 16 // color
+    movk x10, 0xa0a0, lsl 0 // color
+    bl rectangulo
+
+    bl delay //delay
+
+    
+    add x21, x21, 1   // cambiar posicion arbol
+    add x22, x22, 1   // " " " nube
+
+    
+    cmp x21, SCREEN_WIDTH // reset si llegan al final
+    blt fin_arbol
+    mov x21, 0
+fin_arbol:
+
+    cmp x22, SCREEN_WIDTH
+    blt fin_nube
+    mov x22, 0
+fin_nube:
+
+    b loopMain
+    
 InfLoop:
 	b InfLoop
