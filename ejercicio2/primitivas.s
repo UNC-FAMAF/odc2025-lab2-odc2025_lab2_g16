@@ -1,95 +1,89 @@
   .equ SCREEN_WIDTH, 		640
 	.equ SCREEN_HEIGH, 		480
-  .equ BLUE, 0x3399FF
-  .equ BROWN, 0x663300
-  .equ SKIN, 0xffcc99 
-  .equ YELLOW, 0xe6b93d
-  .equ RED, 0xff0000
-  .equ GREY, 0xa0a0a0
-
+  .equ H_NUBE, 10
   .text
-  .global nube_chica
-/*
-//  RECTANGULO : param: x11 = x , x12 heightR , x13 = y , x14 = widthR
+  .global rectangulo
+  .global delay
+  .global limpiar_fondo
+  .global dibujar_nube
+
+
 rectangulo:
-  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
-  
-  mov x11, x5 // aqui va el pixel y inicial
-  mov x12, x6 // alto deseado
+  mov x11, x4       // fila actual (Y)
+  mov x12, x5       // alto restante
 
 rectangulo_alto_loop:
-  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  cmp x12, 0
   beq fin_rectangulo
 
-  mov x13, x7 // aqui va el pixel x inicial
-  mov x14, x8 // ancho deseado 
+  mov x13, x3       // columna actual (X)
+  mov x14, x6       // ancho restante
 
 rectangulo_fila_loop:
-  // direccion = dInicio + 4 * (x+(y*640)) 
   mov x15, x11
   mul x15, x15, x1
   add x15, x15, x13
-
-  lsl x15, x15, 2
-  
-  //aca se pinta el pixel en la direccion x15
+  lsl x15, x15, 2   // multiplicar por 4 (bytes por pixel)
   add x15, x20, x15
-  stur w10, [x15]
 
-delay:
-  mov x2, 50000
-loopD:
-  sub x2, x2, 1
-  cmp x2, xzr
-  cbnz x2, loopD
+  stur w10, [x15]   // pintar pixel
 
-  //avanzo un pixel
-  add x13, x13, 1
-  //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0) 
+  add x13, x13, 1   // siguiente columna
   sub x14, x14, 1
-  // mientras haya pixeles para pintar continuo en la fila 
   cbnz x14, rectangulo_fila_loop
-  
-  add x11, x11, 1 //bajo una posicion y 
-  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+
+  add x11, x11, 1   // siguiente fila
+  sub x12, x12, 1
   b rectangulo_alto_loop
 
 fin_rectangulo:
   ret
-*/
 
-//dada una direccion base dibujo una nube solo necesito la direccion base de donde debe empezar a dibujar
-//llamemosle x3
-//color x10
-nube_chica:
-  mov x1, 640
-  mov x4, 4 // tamanio parte de arriba nube
-  mov x5, 6 // tamanio parte de abajo nube
-  stur w10,[x3]
-  b nube_chica_arriba
+delay:
+  cbz x30, fin_delay 
 
-nube_chica_arriba:
-  cbz x4, salto_abajo
-  stur w10, [x3]
-  add x3, x3, 4
-  sub x4, x4, 1
-  
-  b nube_chica_arriba
+delay_loop:
+  subs x30, x30, 1  
+  bne delay_loop        
 
-salto_abajo:
-  //actualizar direccion x3
-  mov x6, x1 // x6 = SCREEN_W
-  lsl x6, x6, 2
-  add x3, x3, x6 // a la direccion que tenia ahora apunta al pixel de abajo donde termino la parte de arriba de la nube
-  add x3, x3, 8 // me muevo 2 pixeles hacia la derecha
+fin_delay:
+  ret
 
-nube_chica_abajo:
-  cbz x5, fin_nube_chica
-  stur w10, [x3]
-  sub x3, x3, 4 //retrocedo un pixel
-  sub x5, x5, 1
-  
-  b nube_chica_abajo
+limpiar_fondo:
+  movz x10, 0x33, lsl 16    // azul claro
+  movk x10, 0x99ff, lsl 0
 
-fin_nube_chica:
+  mov x0, x20               // base del framebuffer
+  mov x1, SCREEN_WIDTH
+  mov x2, SCREEN_HEIGH
+
+loop_fondo_y:
+  mov x3, x1
+loop_fondo_x:
+  stur w10, [x0]
+  add x0, x0, 4
+  subs x3, x3, 1
+  bne loop_fondo_x
+  subs x2, x2, 1
+  bne loop_fondo_y
+
+  ret
+
+dibujar_nube:
+  // Color blanco grisáceo para la nube
+  movz x10, 0xffff, lsl 16
+  movk x10, 0xf0f0, lsl 0
+
+  // Primer rectángulo (arriba): más corto
+  mov x5, 10      // altura
+  mov x6, 20      // ancho
+  bl rectangulo
+
+  // Segundo rectángulo (abajo): más largo
+  add x4, x4, 10  // bajamos 10 píxeles (altura del rectángulo de arriba)
+  sub x3, x3, 4   // lo hacemos empezar un poco antes (más ancho)
+  mov x5, 10      // altura
+  mov x6, 28      // ancho
+  bl rectangulo
+
   ret

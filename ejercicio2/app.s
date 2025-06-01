@@ -29,20 +29,28 @@ loop0:
 	sub x2,x2,1	   // Decrementar contador Y
 	cbnz x2,loop1  // Si no es la última fila, salto
 
-nubeChica:
+//NUBES
+  mov x1, SCREEN_WIDTH
+  mov x2, SCREEN_HEIGH
+  mov x3, 320 //posicion inicial pixel x
+  mov x4, 240 //"" pixel y
+  mov x5, 20 //heigh rect
+  mov x6, 30 //width rect
+  mov x30, 40000 //delay
   movz x10, 0xa0, lsl 16
   movk x10, 0xa0a0, lsl 00
-  mov x7, 320
-  mov x8, 240
 
-  mul x9, x8, x1        
-  add x9, x9, x7        
-  lsl x9, x9, 2         
-  add x3, x20, x9       
-  bl nube_chica
 
-	//---------------------------------------------------------------
-	// Infinite Loop
+loopNube:
+  bl limpiar_fondo
+  bl dibujar_nube
+
+  // actualizar x de la nube
+  sub x3, x3, 1     
+  bl delay
+  mov x30, 1000
+  bl delay
+  cbnz x3, loopNube
 
 InfLoop:
 	b InfLoop
