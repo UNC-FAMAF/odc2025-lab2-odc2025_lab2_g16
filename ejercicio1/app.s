@@ -36,17 +36,17 @@ dibujar_rectangulo:
   movz x10, 0xffc0, lsl 16 // color
   movk x10, 0xc0c0, lsl 00 // color
   
-  mov x11, 200 // aqui va el pixel y inicial
+  mov x11, 273 // aqui va el pixel y inicial
   mov x12, 8 // alto deseado
 
-rectangulo_alto_loop:
+rectangulo_alto_loop0:
   cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
   beq fin_rectangulo
 
   mov x13, 80 // aqui va el pixel x inicial
   mov x14, 480 // ancho deseado 
 
-rectangulo_fila_loop:
+rectangulo_fila_loop0:
   // direccion = dInicio + 4 * (x+(y*640)) 
   mov x15, x11
   mul x15, x15, x1
@@ -63,11 +63,11 @@ rectangulo_fila_loop:
   //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0) 
   sub x14, x14, 1
   // mientras haya pixeles para pintar continuo en la fila 
-  cbnz x14, rectangulo_fila_loop
+  cbnz x14, rectangulo_fila_loop0
   
   add x11, x11, 1 //bajo una posicion y 
   sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
-  b rectangulo_alto_loop
+  b rectangulo_alto_loop0
 
 fin_rectangulo:
 
@@ -94,7 +94,7 @@ fin_rectangulo:
 circulo:
     mov x10, 320     // centroX
     mov x11, 530     // centroY
-    mov x12, 320     // Radio
+    mov x12, 250     // Radio
 
     mov x13, SCREEN_WIDTH  // ancho
     mov x14, SCREEN_HEIGH  // alto
@@ -142,86 +142,6 @@ finFila:
 finCirculo:
 	//---------------------------------------------------------------
 	// Infinite Loop
-
-
-//ROMBO
-seteo_rombo:
-//todoo menos x4 puede cambiarse a conveniencia
-
-/*
-memorias temporales utilizadas: x4, x6, x11, x17, x18, x19, x21, x22 y x23 
-(x11 es el color utilizado)
-(x17 y x18 son SCREEN_WIDTH y SCREEN_HEIGH respectivamente)
-*/ 
-  	mov x17, SCREEN_WIDTH
-  	mov x18, SCREEN_HEIGH
-	mov x4, 0     //x4 es usado para decidir que parte del rombo falta
-	mov x1, 320   //posicion del rombo en el eje X
-	mov x19, 100  //x19 decide el tamaño del rombo
-	mov x2, 240   //posicion del rombo en el eje Y
-	b rombo
- 
-rombo:
-	add x21, x1, x19  //punto B
-	sub x22, x1, x19  //punto A
-	sub x23, x18, x2  //preparando eje y para el calculo de direccion
-	mul x0, x23, x17
-	add x0, x0, x22
-	lsl x0, x0, 2
-	add x0, x0, x20
-	add x4, x4, 1     //pasando al siguiente paso del rombo
-	b limite
-
-limite:
-	//usando x6 para crear el limite de la fila
-	mul x6, x23, x17
-	add x6, x6, x21
-	lsl x6, x6, 2
-	add x6, x6, x20
-
-	//actualizando x0 con los datos actuales de limites (punto a y eje Y)
-	mul x0, x23, x17
-	add x0, x0, x22
-	lsl x0, x0, 2
-	add x0, x0, x20
-
-	//decidiendo a que parte del rombo ir
-	cmp x4, 1
-	beq semirombo1
-	cmp x4, 2
-	beq semirombo2
- 
-semirombo1:
-	stur w11, [x0]    //cambiar a color de preferencia
-	add x0, x0, 4
-	cmp x0, x6
-	ble semirombo1
-
-	//actualizando datos para los limites
-	add x22, x22, 1
-	sub x21, x21, 1
-	sub x23, x23, 1
-
-	//decidiendo si pasar a la siguiente fila o ir al siguiente paso
-	cmp x22, x1
-	ble limite
-	b rombo
- 
-semirombo2:
-	stur w11, [x0]   //cambiar a color de preferencia
-	add x0, x0, 4
-	cmp x0, x6
-	ble semirombo2
-
-	//actualizando datos para los limites
-	add x22, x22, 1
-	sub x21, x21, 1
-	add x23, x23, 1
-
-	//decidiendo si pasar a la siguiente fila o ir al siguiente paso
-	cmp x22, x1
-	ble limite
-	mov x4, 0   //reseteando x4 para preparar un proximo rombo
  
 
 //LUNA
@@ -306,7 +226,8 @@ Luna2:
 
     mov x13, SCREEN_WIDTH  // ancho
     mov x14, SCREEN_HEIGH  // alto
-    mov x15, 0x0034    // color
+    movz x15, 0x33,   lsl 16    // color
+    movk x15, 0x0066, lsl 00
 
     mov x1, 0     // y = 0
 cicloY2:
@@ -345,6 +266,31 @@ finFila2:
     b cicloY2
 
 finLuna2:
+
+seteox5:
+    mov x5, 0  //x5 solo es usado para detectar cuantos rombos hay
+
+rombos_balanceados:
+    mov x19, 50  //x19 decide el tamaño de los rombos
+    movz x10, 0x00,   lsl 16
+    movk x10, 0x0000, lsl 00
+    movz x11, 0xff,   lsl 16
+    movk x11, 0xffff, lsl 00
+
+    mov x1, 120  //posicion en el eje X del primer rombo
+    mov x2, 260  //posicion en el eje Y del primer rombo
+
+    cmp x5, 0
+    beq seteo_rombo  //si no hay rombos en la imagen crea uno usando las especificaciones anteriores
+
+    mov x10, x11
+    movz x11, 0x00,   lsl 16
+    movk x11, 0x0000, lsl 00
+
+    mov x1, 520     //movemos el 2do rombo al otro lado de la imagen en el eje X
+
+    cmp x5, 1
+    beq seteo_rombo  //si hay 1 rombo en la imagen crea otro con las nuevas especificaciones
 
 // Dibujar 2025
 
@@ -405,8 +351,8 @@ Cero_interior:
 
     mov x13, SCREEN_WIDTH  // ancho
     mov x14, SCREEN_HEIGH  // alto
-    movz x15, 0x0033, lsl 16 // color
-    movk x15, 0x0066, lsl 00 // color
+    movz x15, 0xFC4B, lsl 16  //color
+    movk x15, 0x08, lsl 00    //color
     
     mov x1, 0     // y = 0
 cicloY_02:
@@ -490,9 +436,9 @@ fin_primer_2:
 
 cuadrado_aux_1a:
   mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
-  movz x10, 0x0033, lsl 16 // color
-  movk x10, 0x0066, lsl 00 // color
-  
+  movz x10, 0xFC4B, lsl 16   //color
+  movk x10, 0x08, lsl 00     //color
+
   mov x11, 400 // aqui va el pixel y inicial
   mov x12, 20 // alto deseado
 
@@ -527,8 +473,8 @@ fin_cuadrado_aux_1a:
 
 cuadrado_aux_1b:
   mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
-  movz x10, 0x0033, lsl 16 // color
-  movk x10, 0x0066, lsl 00 // color
+  movz x10, 0xFC4B, lsl 16   //color
+  movk x10, 0x08, lsl 00     //color
   
   mov x11, 430 // aqui va el pixel y inicial
   mov x12, 20 // alto deseado
@@ -603,8 +549,8 @@ fin_segundo_2:
 
 cuadrado_aux_2a:
   mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
-  movz x10, 0x0033, lsl 16 // color
-  movk x10, 0x0066, lsl 00 // color
+  movz x10, 0xFC4B, lsl 16   //color
+  movk x10, 0x08, lsl 00     //color
   
   mov x11, 400 // aqui va el pixel y inicial
   mov x12, 20 // alto deseado
@@ -640,8 +586,8 @@ fin_cuadrado_aux_2a:
 
 cuadrado_aux_2b:
   mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
-  movz x10, 0x0033, lsl 16 // color
-  movk x10, 0x0066, lsl 00 // color
+  movz x10, 0xFC4B, lsl 16   //color
+  movk x10, 0x08, lsl 00     //color
   
   mov x11, 430 // aqui va el pixel y inicial
   mov x12, 20 // alto deseado
@@ -716,8 +662,8 @@ fin_dibujo_5:
 
 cuadrado_aux_3a:
   mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
-  movz x10, 0x0033, lsl 16 // color
-  movk x10, 0x0066, lsl 00 // color
+  movz x10, 0xFC4B, lsl 16   //color
+  movk x10, 0x08, lsl 00     //color
   
   mov x11, 400 // aqui va el pixel y inicial
   mov x12, 20 // alto deseado
@@ -753,8 +699,8 @@ fin_cuadrado_aux_3a:
 
 cuadrado_aux_3b:
   mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
-  movz x10, 0x0033, lsl 16 // color
-  movk x10, 0x0066, lsl 00 // color
+  movz x10, 0xFC4B, lsl 16   //color
+  movk x10, 0x08, lsl 00     //color
   
   mov x11, 430 // aqui va el pixel y inicial
   mov x12, 20 // alto deseado
@@ -790,3 +736,81 @@ fin_cuadrado_aux_3b:
 
 InfLoop:
 	b InfLoop
+
+//ROMBO
+seteo_rombo:
+//todoo menos x4 puede cambiarse a conveniencia
+
+/*
+memorias temporales utilizadas: x4, x6, x11, x17, x18, x19, x21, x22 y x23 
+(x11 es el color utilizado)
+(x17 y x18 son SCREEN_WIDTH y SCREEN_HEIGH respectivamente)
+*/ 
+  	mov x17, SCREEN_WIDTH
+  	mov x18, SCREEN_HEIGH
+	mov x4, 0     //x4 es usado para decidir que parte del rombo falta
+	b rombo
+ 
+rombo:
+	add x21, x1, x19  //punto B
+	sub x22, x1, x19  //punto A
+	sub x23, x18, x2  //preparando eje y para el calculo de direccion
+	mul x0, x23, x17
+	add x0, x0, x22
+	lsl x0, x0, 2
+	add x0, x0, x20
+	add x4, x4, 1     //pasando al siguiente paso del rombo
+	b limite
+
+limite:
+	//usando x6 para crear el limite de la fila
+	mul x6, x23, x17
+	add x6, x6, x21
+	lsl x6, x6, 2
+	add x6, x6, x20
+
+	//actualizando x0 con los datos actuales de limites (punto a y eje Y)
+	mul x0, x23, x17
+	add x0, x0, x22
+	lsl x0, x0, 2
+	add x0, x0, x20
+
+	//decidiendo a que parte del rombo ir
+	cmp x4, 1
+	beq semirombo1
+	cmp x4, 2
+	beq semirombo2
+ 
+semirombo1:
+	stur w11, [x0]    //cambiar a color de preferencia
+	add x0, x0, 4
+	cmp x0, x6
+	ble semirombo1
+
+	//actualizando datos para los limites
+	add x22, x22, 1
+	sub x21, x21, 1
+	sub x23, x23, 1
+
+	//decidiendo si pasar a la siguiente fila o ir al siguiente paso
+	cmp x22, x1
+	ble limite
+	b rombo
+ 
+semirombo2:
+	stur w10, [x0]   //cambiar a color de preferencia
+	add x0, x0, 4
+	cmp x0, x6
+	ble semirombo2
+
+	//actualizando datos para los limites
+	add x22, x22, 1
+	sub x21, x21, 1
+	add x23, x23, 1
+
+	//decidiendo si pasar a la siguiente fila o ir al siguiente paso
+	cmp x22, x1
+	ble limite
+	mov x4, 0   //reseteando x4 para preparar un proximo rombo
+    add x5, x5, 1
+    b rombos_balanceados
