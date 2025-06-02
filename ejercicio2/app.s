@@ -12,12 +12,14 @@
 main:
     mov x22, 333 // x arbol
     mov x21, 23 // x nube
+    mov x23, 640 // x edificio 1
+    mov x24, 320 // x edificio 2
     
 loopMain:
     mov x20, x0
     movz x10, 0x33, lsl 16
     movk x10, 0x99ff, lsl 00
-    mov x2, SCREEN_HEIGH
+    mov x2, 320
 loop1:
     mov x1, SCREEN_WIDTH
 loop0:
@@ -39,6 +41,23 @@ loop0:
     movz x10, 0x80, lsl 16 // color
     movk x10, 0xff00, lsl 0
     bl rectangulo
+    
+    // EDIFICIO 
+    mov x3, x23
+    mov x4, 33 // y edif
+    mov x5, 300
+    mov x6, 120
+    movz x10, 0xa0, lsl 16
+    movk x10, 0xa0a0, lsl 0
+    bl rectangulo
+
+    // EDIFICIO 2
+    mov x3, x24
+    mov x4, 132 // y edif
+    mov x5, 200
+    mov x6, 100
+    
+    bl rectangulo
 
     // ------------ ARBOL ------------
     mov x3, x21       
@@ -49,14 +68,14 @@ loop0:
     movk x10, 0x4c00, lsl 0
     bl rectangulo
 
-    // ------------ NUBE ------------
-    mov x3, x22       
-    mov x4, 299 // y nube
-    mov x5, 20 //alt 
-    mov x6, 60 // ancho
+    // ------------ AUTO ROSA ------------
+    mov x3, x22  
+    mov x4, 299 // y AUTO
+    mov x5, 35 //alt 
+    mov x6, 120 // ancho
 
-    movz x10, 0xa0, lsl 16 // color
-    movk x10, 0xa0a0, lsl 0 // color
+    movz x10, 0xff, lsl 16 // color
+    movk x10, 0x66ff, lsl 0 // color
     bl rectangulo
 
     bl delay //delay
@@ -64,7 +83,20 @@ loop0:
     
     add x21, x21, 1   // cambiar posicion arbol
     add x22, x22, 1   // " " " nube
+    sub x23, x23, 1   // "" "" edificio1
+    sub x24, x24, 1   // edif 2
 
+
+    cmp x23, 0 // reset si edificio1 llega a 0
+    bgt fin_edificio1
+    mov x23, SCREEN_WIDTH
+fin_edificio1:
+    
+
+    cmp x24, 0
+    bgt fin_edificio2
+    mov x24, SCREEN_WIDTH
+fin_edificio2:
     
     cmp x21, SCREEN_WIDTH // reset si llegan al final
     blt fin_arbol
@@ -78,5 +110,3 @@ fin_nube:
 
     b loopMain
     
-InfLoop:
-	b InfLoop
