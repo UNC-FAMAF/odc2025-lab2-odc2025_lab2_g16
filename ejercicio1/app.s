@@ -140,9 +140,434 @@ finFila:
     b cicloY
 
 finCirculo:
-	//---------------------------------------------------------------
-	// Infinite Loop
- 
+	
+// ----------------
+// * Dibujar ODC en la pantalla 
+// ----------------
+// D
+dibujar_d:
+    mov x10, 330     // centroX
+    mov x11, 350     // centroY
+    mov x12, 35     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    // color naranja
+    movz x15, 0xAA00, lsl 16
+    movk x15, 0xFFBB, lsl 00
+    // fin color
+
+    mov x1, 0              // asignamos y = 0
+cicloY_d:
+    cmp x1, x14
+    bge finCirculo_d
+
+    mov x2, 0              // asignamos x = 0
+cicloX_d:
+    cmp x2, x13
+    bge finFila_d
+
+    sub x3, x2, x10        // x3 = x - centroX
+    sub x4, x1, x11        // x4 = y - centroY
+    mul x3, x3, x3         // x3²
+    mul x4, x4, x4         // x4²
+    add x5, x3, x4         // x5 = x3² + x4²
+
+    mul x6, x12, x12       // radio²
+    cmp x5, x6
+    bgt noPintar_d
+
+    mul x7, x1, x13       // x7 = y * 4
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pinta pixel
+
+noPintar_d:
+    add x2, x2, 1
+    b cicloX_d
+
+finFila_d:
+    add x1, x1, 1
+    b cicloY_d
+
+finCirculo_d:
+
+dibujar_d0:
+    mov x10, 330     // centroX
+    mov x11, 350     // centroY
+    mov x12, 25     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    // color naranja
+    movz x15, 0xFC4B, lsl 16
+    movk x15, 0x08, lsl 00
+    // fin color
+
+    mov x1, 0              // asignamos y = 0
+cicloY_d0:
+    cmp x1, x14
+    bge finCirculo_d0
+
+    mov x2, 0              // asignamos x = 0
+cicloX_d0:
+    cmp x2, x13
+    bge finFila_d0
+
+    sub x3, x2, x10        // x3 = x - centroX
+    sub x4, x1, x11        // x4 = y - centroY
+    mul x3, x3, x3         // x3²
+    mul x4, x4, x4         // x4²
+    add x5, x3, x4         // x5 = x3² + x4²
+
+    mul x6, x12, x12       // radio²
+    cmp x5, x6
+    bgt noPintar_d0
+
+    mul x7, x1, x13       // x7 = y * 4
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pinta pixel
+
+noPintar_d0:
+    add x2, x2, 1
+    b cicloX_d0
+
+finFila_d0:
+    add x1, x1, 1
+    b cicloY_d0
+
+finCirculo_d0:
+
+
+dibujar_d_rec:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0xFC4B, lsl 16 // color
+  movk x10, 0x08, lsl 00 // color
+  
+  mov x11, 310 // aqui va el pixel y inicial
+  mov x12, 80 // alto deseado
+
+d_alto_loop0:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_d
+
+  mov x13, 285 // aqui va el pixel x inicial
+  mov x14, 40 // ancho deseado 
+
+d_fila_loop0:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  //avanzo un pixel
+  add x13, x13, 1
+  //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0) 
+  sub x14, x14, 1
+  // mientras haya pixeles para pintar continuo en la fila 
+  cbnz x14, d_fila_loop0
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b d_alto_loop0
+
+fin_d:
+
+
+dibujar_d2_rec:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0xAA00, lsl 16 // color
+  movk x10, 0xFFBB, lsl 00 // color
+  
+  mov x11, 316 // aqui va el pixel y inicial
+  mov x12, 69 // alto deseado
+
+d2_alto_loop0:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_d2
+
+  mov x13, 318 // aqui va el pixel x inicial
+  mov x14, 12 // ancho deseado 
+
+d2_fila_loop0:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  //avanzo un pixel
+  add x13, x13, 1
+  //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0) 
+  sub x14, x14, 1
+  // mientras haya pixeles para pintar continuo en la fila 
+  cbnz x14, d2_fila_loop0
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b d2_alto_loop0
+
+fin_d2:
+
+// O
+dibujar_o:
+    mov x10, 250     // centroX
+    mov x11, 350     // centroY
+    mov x12, 35     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    // color naranja
+    movz x15, 0xAA00, lsl 16
+    movk x15, 0xFFBB, lsl 00
+    // fin color
+
+    mov x1, 0              // asignamos y = 0
+cicloY_o:
+    cmp x1, x14
+    bge finCirculo_o
+
+    mov x2, 0              // asignamos x = 0
+cicloX_o:
+    cmp x2, x13
+    bge finFila_o
+
+    sub x3, x2, x10        // x3 = x - centroX
+    sub x4, x1, x11        // x4 = y - centroY
+    mul x3, x3, x3         // x3²
+    mul x4, x4, x4         // x4²
+    add x5, x3, x4         // x5 = x3² + x4²
+
+    mul x6, x12, x12       // radio²
+    cmp x5, x6
+    bgt noPintar_o
+
+    mul x7, x1, x13       // x7 = y * 4
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pinta pixel
+
+noPintar_o:
+    add x2, x2, 1
+    b cicloX_o
+
+finFila_o:
+    add x1, x1, 1
+    b cicloY_o
+
+finCirculo_o:
+
+// CIRCULO DEL CENTRO
+dibujar_o2:
+    mov x10, 250     // centroX
+    mov x11, 350     // centroY
+    mov x12, 25     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    // color naranja
+    movz x15, 0xFC4B, lsl 16
+    movk x15, 0x08, lsl 00
+    // fin color
+
+    mov x1, 0              // asignamos y = 0
+cicloY_o2:
+    cmp x1, x14
+    bge finCirculo_o2
+
+    mov x2, 0              // asignamos x = 0
+cicloX_o2:
+    cmp x2, x13
+    bge finFila_o2
+
+    sub x3, x2, x10        // x3 = x - centroX
+    sub x4, x1, x11        // x4 = y - centroY
+    mul x3, x3, x3         // x3²
+    mul x4, x4, x4         // x4²
+    add x5, x3, x4         // x5 = x3² + x4²
+
+    mul x6, x12, x12       // radio²
+    cmp x5, x6
+    bgt noPintar_o2
+
+    mul x7, x1, x13       // x7 = y * 4
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pinta pixel
+
+noPintar_o2:
+    add x2, x2, 1
+    b cicloX_o2
+
+finFila_o2:
+    add x1, x1, 1
+    b cicloY_o2
+
+finCirculo_o2:
+
+// dibujar C
+dibujar_c:
+    mov x10, 425     // centroX
+    mov x11, 350     // centroY
+    mov x12, 35     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    // color cian
+    movz x15, 0xAA00, lsl 16
+    movk x15, 0xFFBB, lsl 00
+    // fin color
+
+    mov x1, 0              // asignamos y = 0
+cicloY_c:
+    cmp x1, x14
+    bge finCirculo_c
+
+    mov x2, 0              // asignamos x = 0
+cicloX_c:
+    cmp x2, x13
+    bge finFila_c
+
+    sub x3, x2, x10        // x3 = x - centroX
+    sub x4, x1, x11        // x4 = y - centroY
+    mul x3, x3, x3         // x3²
+    mul x4, x4, x4         // x4²
+    add x5, x3, x4         // x5 = x3² + x4²
+
+    mul x6, x12, x12       // radio²
+    cmp x5, x6
+    bgt noPintar_c
+
+    mul x7, x1, x13       // x7 = y * 4
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pinta pixel
+
+noPintar_c:
+    add x2, x2, 1
+    b cicloX_c
+
+finFila_c:
+    add x1, x1, 1
+    b cicloY_c
+
+finCirculo_c:
+
+dibujar_c_rec:
+  mov x1, SCREEN_WIDTH //en x1 esta SCREEN_WIDTH
+  movz x10, 0xFC4B, lsl 16 // color
+  movk x10, 0x08, lsl 00 // color
+  
+  mov x11, 330 // aqui va el pixel y inicial
+  mov x12, 40 // alto deseado
+
+c_alto_loop0:
+  cmp x12, 0  // si no hay pixeles de alto por dibujar finalizo
+  beq fin_c
+
+  mov x13, 440 // aqui va el pixel x inicial
+  mov x14, 30 // ancho deseado 
+
+c_fila_loop0:
+  // direccion = dInicio + 4 * (x+(y*640)) 
+  mov x15, x11
+  mul x15, x15, x1
+  add x15, x15, x13
+
+  lsl x15, x15, 2
+  
+  //aca se pinta el pixel en la direccion x15
+  add x15, x20, x15
+  stur w10, [x15]
+  
+  //avanzo un pixel
+  add x13, x13, 1
+  //resto el pixel hasta llegar al alto deseado (voy bajando desde x14 a 0) 
+  sub x14, x14, 1
+  // mientras haya pixeles para pintar continuo en la fila 
+  cbnz x14, c_fila_loop0
+  
+  add x11, x11, 1 //bajo una posicion y 
+  sub x12, x12, 1 //dibuje un pixel por lo tanto resto el contador
+  b c_alto_loop0
+
+fin_c:
+
+// CIRCULO DEL CENTRO
+dibujar_c2:
+    mov x10, 425     // centroX
+    mov x11, 350     // centroY
+    mov x12, 25     // Radio
+
+    mov x13, SCREEN_WIDTH  // ancho
+    mov x14, SCREEN_HEIGH  // alto
+    // color
+    movz x15, 0xFC4B, lsl 16
+    movk x15, 0x08, lsl 00
+    // fin color
+
+    mov x1, 0              // asignamos y = 0
+cicloY_c2:
+    cmp x1, x14
+    bge finCirculo_c2
+
+    mov x2, 0              // asignamos x = 0
+cicloX_c2:
+    cmp x2, x13
+    bge finFila_c2
+
+    sub x3, x2, x10        // x3 = x - centroX
+    sub x4, x1, x11        // x4 = y - centroY
+    mul x3, x3, x3         // x3²
+    mul x4, x4, x4         // x4²
+    add x5, x3, x4         // x5 = x3² + x4²
+
+    mul x6, x12, x12       // radio²
+    cmp x5, x6
+    bgt noPintar_c2
+
+    mul x7, x1, x13       // x7 = y * 4
+    add x7, x7, x2
+    lsl x7, x7, 2         // *4
+    add x8, x20, x7       // dirección del pixel
+
+    str w15, [x8]         // pinta pixel
+
+noPintar_c2:
+    add x2, x2, 1
+    b cicloX_c2
+
+finFila_c2:
+    add x1, x1, 1
+    b cicloY_c2
+
+finCirculo_c2:
+
+// ----------------
+// * FIN : Dibujar ODC en la pantalla 
+// ----------------
 
 //LUNA
     mov x1, SCREEN_WIDTH
