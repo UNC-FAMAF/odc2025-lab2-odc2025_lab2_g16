@@ -140,7 +140,7 @@ finFila:
     b cicloY
 
 finCirculo:
-	
+
 // ----------------
 // * Dibujar ODC en la pantalla 
 // ----------------
@@ -568,6 +568,7 @@ finCirculo_c2:
 // ----------------
 // * FIN : Dibujar ODC en la pantalla 
 // ----------------
+
 
 //LUNA
     mov x1, SCREEN_WIDTH
