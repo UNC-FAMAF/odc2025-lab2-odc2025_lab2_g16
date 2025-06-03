@@ -11,9 +11,12 @@
 
 main:
     mov x22, 333 // x arbol
+    mov x27, 634  // x hojas
     mov x21, 23 // x nube
     mov x23, 640 // x edificio 1
     mov x24, 320 // x edificio 2
+    mov x25, 420 // x rueda1
+    mov x26, 340 // x rueda2
     
 loopMain:
     mov x20, x0
@@ -30,7 +33,8 @@ loop0:
     sub x2, x2, 1
     cbnz x2, loop1
 
-    // CAMPO VERDE
+    // CAMPO VERDEmovz x10, 0xff, lsl 16 // color
+    movk x10, 0x66ff, lsl 0 // color
     // un rectangulo que simula un campo
     mov x1, SCREEN_WIDTH
     mov x2, SCREEN_HEIGH
@@ -59,15 +63,6 @@ loop0:
     
     bl rectangulo
 
-    // ------------ ARBOL ------------
-    mov x3, x21       
-    mov x4, 300 // y arbol
-    mov x5, 80 // alt
-    mov x6, 10 // ancho
-    movz x10, 0x99, lsl 16
-    movk x10, 0x4c00, lsl 0
-    bl rectangulo
-
     // ------------ AUTO ROSA ------------
     mov x3, x22  
     mov x4, 299 // y AUTO
@@ -78,13 +73,51 @@ loop0:
     movk x10, 0x66ff, lsl 0 // color
     bl rectangulo
 
+    // ----------- RUEDAS --------------
+    mov x3, x25
+    mov x4, 320 // y rueda1
+    mov x5, 25 // alto
+    mov x6, 25 // ancho
+    movz x10, 0x00, lsl 16 // color
+    movk x10, 0x0000, lsl 0 // color
+    bl rectangulo
+
+    // rueda2
+    mov x3, x26
+    mov x4, 320 // y rueda1
+    mov x5, 25 // alto
+    mov x6, 25 // ancho
+    bl rectangulo
+
+    // ------------ ARBOL ------------
+    mov x3, x21       
+    mov x4, 300 // y arbol
+    mov x5, 80 // alt
+    mov x6, 10 // ancho
+    movz x10, 0x99, lsl 16
+    movk x10, 0x4c00, lsl 0
+    bl rectangulo
+
+    // ------------ Hojas ------------
+    mov x3, x27       
+    mov x4, 255 // y arbol
+    mov x5, 70 // alt
+    mov x6, 70 // ancho
+    movz x10, 0x01, lsl 16
+    movk x10, 0x6815, lsl 0
+    bl rectangulo
+
     bl delay //delay
 
     
-    add x21, x21, 1   // cambiar posicion arbol
+    sub x21, x21, 1   // cambiar posicion arbol
     add x22, x22, 1   // " " " nube
     sub x23, x23, 1   // "" "" edificio1
     sub x24, x24, 1   // edif 2
+    add x25, x25, 1   // avanzan rueda1
+    add x26, x26, 1   // ""     rueda2
+    sub x27, x27, 1   // "" hojas
+    
 
 
     cmp x23, 0 // reset si edificio1 llega a 0
@@ -92,7 +125,6 @@ loop0:
     mov x23, SCREEN_WIDTH
 fin_edificio1:
     
-
     cmp x24, 0
     bgt fin_edificio2
     mov x24, SCREEN_WIDTH
