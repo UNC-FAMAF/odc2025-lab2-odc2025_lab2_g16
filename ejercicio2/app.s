@@ -55,12 +55,73 @@ loop0:
     movk x10, 0xa0a0, lsl 0
     bl rectangulo
 
+    // VENTANAS EDIFICIO
+    add x3, x23, 10
+    add x4, x4, 10
+    mov x5, 230
+    mov x6, 100
+    movz x10, 0x00, lsl 16
+    movk x10, 0xb4ff, lsl 00
+    bl rectangulo
+
+    add x3, x23, 50
+    mov x5, 230
+    mov x6, 20
+    movz x10, 0xa0, lsl 16
+    movk x10, 0xa0a0, lsl 0
+    bl rectangulo
+
+    add x3, x23, 10
+    add x4, x4, 30
+    mov x5, 10
+    mov x6, 100
+    bl rectangulo
+
+    add x4, x4, 40
+    bl rectangulo
+
+    add x4, x4, 40
+    bl rectangulo
+
+    add x4, x4, 40
+    bl rectangulo
+
+    add x4, x4, 40
+    bl rectangulo
+
     // EDIFICIO 2
     mov x3, x24
     mov x4, 132 // y edif
     mov x5, 200
     mov x6, 100
+
+    bl rectangulo
     
+    // VENTANAS EDIFICIO 2
+    add x3, x24, 10
+    add x4, x4, 10
+    mov x5, 150
+    mov x6, 80
+    movz x10, 0x00, lsl 16
+    movk x10, 0xb4ff, lsl 00
+    bl rectangulo
+
+    add x3, x24, 40
+    mov x6, 20
+    movz x10, 0xa0, lsl 16
+    movk x10, 0xa0a0, lsl 0
+    bl rectangulo
+
+    add x3, x24, 10
+    add x4, x4, 30
+    mov x5, 10
+    mov x6, 80
+    bl rectangulo
+
+    add x4, x4, 40
+    bl rectangulo
+
+    add x4, x4, 40
     bl rectangulo
 
     // ------------ AUTO ROSA ------------
