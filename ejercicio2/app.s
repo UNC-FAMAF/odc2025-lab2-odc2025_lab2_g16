@@ -10,9 +10,9 @@
   .extern nube_chica
 
 main:
-    mov x22, 333 // x arbol
-    mov x27, 634  // x hojas
-    mov x21, 23 // x nube
+    mov x22, 333 // x auto
+    mov x27, 174  // x hojas
+    mov x21, 200 // x arbol
     mov x23, 640 // x edificio 1
     mov x24, 320 // x edificio 2
     mov x25, 420 // x rueda1
@@ -188,11 +188,11 @@ loop0:
 
     
     sub x21, x21, 1   // cambiar posicion arbol
-    add x22, x22, 1   // " " " nube
+    add x22, x22, 4   // " " " auto
     sub x23, x23, 1   // "" "" edificio1
     sub x24, x24, 1   // edif 2
-    add x25, x25, 1   // avanzan rueda1
-    add x26, x26, 1   // ""     rueda2
+    add x25, x25, 4   // avanzan rueda1
+    add x26, x26, 4   // ""     rueda2
     sub x27, x27, 1   // "" hojas
     
 
@@ -213,9 +213,17 @@ fin_edificio2:
 fin_arbol:
 
     cmp x22, SCREEN_WIDTH
-    blt fin_nube
+    blt fin_rueda1
     mov x22, 0
-fin_nube:
+fin_rueda1:
+    cmp x25, SCREEN_WIDTH
+    blt fin_rueda2
+    mov x25, 0
+fin_rueda2:
+    cmp x26, SCREEN_WIDTH
+    blt fin_auto
+    mov x26, 0
+fin_auto:
     add x28, x28, 1
 
     b loopMain

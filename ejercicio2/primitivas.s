@@ -7,7 +7,7 @@
   .global circulo
 
 delay:
-    movz x29, 0xaf, lsl 16    
+    movz x29, 0xcf, lsl 16   //cuanto mayor delay, mejor se ve 
 delay_loop:
     subs x29, x29, 1
     b.ne delay_loop
