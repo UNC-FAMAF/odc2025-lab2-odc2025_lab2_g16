@@ -17,12 +17,29 @@ main:
     mov x24, 320 // x edificio 2
     mov x25, 420 // x rueda1
     mov x26, 340 // x rueda2
+    mov x28, 0   //ciclo dia noche
     
 loopMain:
     mov x20, x0
     movz x10, 0x33, lsl 16
     movk x10, 0x99ff, lsl 00
     mov x2, 320
+ciclodia:
+    cmp x28, 100  //se decide cuanto durara el dia
+    bgt ciclonoche
+
+    b loop1
+ciclonoche:
+    movz x10, 0x29, lsl 16
+    movk x10, 0x0090, lsl 00
+
+    cmp x28, 200  //se decide cuanto durara la noche
+    ble loop1
+
+    b cicloreset
+cicloreset:
+    mov x28, 0
+    b loopMain
 loop1:
     mov x1, SCREEN_WIDTH
 loop0:
@@ -94,9 +111,14 @@ loop0:
     mov x4, 132 // y edif
     mov x5, 200
     mov x6, 100
+<<<<<<< HEAD
 
     bl rectangulo
     
+=======
+    bl rectangulo
+
+>>>>>>> 027408a (añadido ciclo dia/noche basico)
     // VENTANAS EDIFICIO 2
     add x3, x24, 10
     add x4, x4, 10
@@ -200,6 +222,7 @@ fin_arbol:
     blt fin_nube
     mov x22, 0
 fin_nube:
+    add x28, x28, 1
 
     b loopMain
     
