@@ -4,6 +4,7 @@
   .text
   .global rectangulo
   .global delay
+  .global circulo
 
 delay:
     movz x29, 0xaf, lsl 16    
@@ -93,4 +94,51 @@ siguiente_linea:
   b linea_trapecio
 
 fin_trapecio:
+  ret
+
+circulo:
+/*
+valores a asignar:
+x3 = centro en X
+x4 = centro en Y
+x5 = radio
+x10 = color
+*/
+    mov x13, 0              // asignamos y = 0
+cicloY:
+    cmp x13, x15
+    bge finCirculo
+ 
+    mov x15, 0              // asignamos x = 0
+cicloX:
+    cmp x15, x1
+    bge finFila
+
+    sub x11, x15, x3        // x11 = x - centroX
+    sub x12, x13, x4        // x12 = y - centroY
+    mul x11, x11, x11         // x11²
+    mul x12, x12, x12         // x12²
+    add x9, x11, x12         // x9 = x3² + x4²
+
+    mul x6, x5, x5       // radio²
+    cmp x9, x6
+    bgt noPintar
+
+    			  // offset = (y * width + x) * 4
+    mul x7, x13, x1       // x7 = y * 640
+    add x7, x7, x15
+    lsl x7, x7, 2         // *4
+    add x8, x0, x7       // dirección del pixel
+
+    stur w10, [x8]         // pinta pixel
+
+noPintar:
+    add x15, x15, 1
+    b cicloX
+
+finFila:
+    add x13, x13, 1
+    b cicloY
+
+finCirculo:
   ret

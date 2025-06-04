@@ -111,14 +111,8 @@ loop0:
     mov x4, 132 // y edif
     mov x5, 200
     mov x6, 100
-<<<<<<< HEAD
-
-    bl rectangulo
-    
-=======
     bl rectangulo
 
->>>>>>> 027408a (añadido ciclo dia/noche basico)
     // VENTANAS EDIFICIO 2
     add x3, x24, 10
     add x4, x4, 10
@@ -151,26 +145,26 @@ loop0:
     mov x4, 299 // y AUTO
     mov x5, 35 //alt 
     mov x6, 120 // ancho
-
+ 
     movz x10, 0xff, lsl 16 // color
     movk x10, 0x66ff, lsl 0 // color
     bl rectangulo
 
     // ----------- RUEDAS --------------
-    mov x3, x25
-    mov x4, 320 // y rueda1
-    mov x5, 25 // alto
-    mov x6, 25 // ancho
+    add x3, x25, 10
+    mov x4, 330 // y rueda1
+    mov x5, 15 // alto
+    //mov x6, 25 // ancho
     movz x10, 0x00, lsl 16 // color
     movk x10, 0x0000, lsl 0 // color
-    bl rectangulo
+    bl circulo
 
     // rueda2
-    mov x3, x26
-    mov x4, 320 // y rueda1
-    mov x5, 25 // alto
-    mov x6, 25 // ancho
-    bl rectangulo
+    add x3, x26, 15
+    mov x4, 330 // y rueda1
+    mov x5, 15 // alto
+    //mov x6, 25 // ancho
+    bl circulo
 
     // ------------ ARBOL ------------
     mov x3, x21       
