@@ -6,8 +6,8 @@
 	.equ GPIO_GPFSEL0,   0x00
 	.equ GPIO_GPLEV0,    0x34
 
-  .globl main
-  .extern nube_chica
+  .global main
+
 
 main:
     mov x22, 333 // x auto
@@ -18,6 +18,79 @@ main:
     mov x25, 420 // x rueda1
     mov x26, 340 // x rueda2
     mov x28, 0   //ciclo dia noche
+
+odc: 
+    movz x10, 0x00, lsl 16 
+    movk x10, 0x9999, lsl 0 // color
+    mov x20, x0
+    mov x1, SCREEN_WIDTH
+    mov x2, SCREEN_HEIGH
+    mov x3, 0
+    mov x4, 400
+    mov x5, 80
+    mov x6, 640
+
+    bl rectangulo
+
+    // O   parte afuera
+    movk x10, 0x4444, lsl 0
+    mov x3, 15
+    mov x4, 410
+    mov x5, 60
+    mov x6, 40
+    bl rectangulo
+    // parte dentro
+    movk x10, 0x9999, lsl 0
+    mov x3, 27
+    mov x4, 430
+    mov x5, 20
+    mov x6, 15
+    bl rectangulo
+
+    // D
+    //d pancita 
+    movk x10, 0x4444, lsl 0
+  
+    mov x3, 65
+    mov x4, 440
+    mov x5, 30
+    mov x6, 30
+    bl rectangulo
+    // parte dentro
+    movk x10, 0x9999, lsl 0
+    
+    mov x3, 74
+    mov x4, 450
+    mov x5, 10
+    mov x6, 10
+    bl rectangulo
+
+    // parte arriba d
+    movk x10, 0x4444, lsl 0
+
+    mov x3, 85
+    mov x4, 410
+    mov x5, 30
+    mov x6, 10
+
+    bl rectangulo
+
+    // C 
+    movk x10, 0x4444, lsl 0
+    
+    mov x3, 105
+    mov x4, 410
+    mov x5, 60
+    mov x6, 40
+    bl rectangulo
+      // parte dentro c
+    movk x10, 0x9999, lsl 0
+    
+    mov x3, 115
+    mov x4, 425
+    mov x5, 30
+    mov x6, 40
+    bl rectangulo
     
 loopMain:
     mov x20, x0
@@ -50,21 +123,20 @@ loop0:
     sub x2, x2, 1
     cbnz x2, loop1
 
-    // CAMPO VERDEmovz x10, 0xff, lsl 16 // color
-    movk x10, 0x66ff, lsl 0 // color
+    // CAMPO VERDE
     // un rectangulo que simula un campo
     mov x1, SCREEN_WIDTH
     mov x2, SCREEN_HEIGH
     mov x3, 0
-    mov x4, 319
+    mov x4, 300
     mov x5, 80
     mov x6, 640
     movz x10, 0x80, lsl 16 // color
     movk x10, 0xff00, lsl 0
     bl rectangulo
 
-    mov x5, 179
-    bl rectangulo
+    //mov x5, 179
+    //bl rectangulo
     
     // EDIFICIO 
     mov x3, x23
