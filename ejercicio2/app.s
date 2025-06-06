@@ -8,7 +8,7 @@
 
   .global main
 
-
+//direcciones libres: x17, x29(si se define en el loop)
 main:
     mov x22, 333 // x auto
     mov x27, 174  // x hojas
@@ -90,6 +90,78 @@ odc:
     mov x4, 425
     mov x5, 30
     mov x6, 40
+    bl rectangulo
+
+    //primer 2
+    movk x10, 0x4444, lsl 0
+    mov x3, 200
+    mov x4, 410
+    mov x5, 60
+    mov x6, 40
+    bl rectangulo
+    // parte dentro 1
+    movk x10, 0x9999, lsl 0
+    mov x3, 200
+    mov x4, 425
+    mov x5, 10
+    mov x6, 25
+    bl rectangulo
+    //parte dentro 2
+    mov x3, 215
+    mov x4, 445
+    bl rectangulo
+
+    // 0
+    movk x10, 0x4444, lsl 0
+    mov x3, 250
+    mov x4, 410
+    mov x5, 60
+    mov x6, 40
+    bl rectangulo
+    // parte dentro
+    movk x10, 0x9999, lsl 0
+    mov x3, 262
+    mov x4, 420
+    mov x5, 40
+    mov x6, 15
+    bl rectangulo
+
+    //segundo 2
+    movk x10, 0x4444, lsl 0
+    mov x3, 300
+    mov x4, 410
+    mov x5, 60
+    mov x6, 40
+    bl rectangulo
+    // parte dentro 1
+    movk x10, 0x9999, lsl 0
+    mov x3, 300
+    mov x4, 425
+    mov x5, 10
+    mov x6, 25
+    bl rectangulo
+    //parte dentro 2
+    mov x3, 315
+    mov x4, 445
+    bl rectangulo
+
+    // 5
+    movk x10, 0x4444, lsl 0
+    mov x3, 350
+    mov x4, 410
+    mov x5, 60
+    mov x6, 40
+    bl rectangulo
+    // parte dentro 1
+    movk x10, 0x9999, lsl 0
+    mov x3, 350
+    mov x4, 445
+    mov x5, 10
+    mov x6, 25
+    bl rectangulo
+    //parte dentro 2
+    mov x3, 365
+    mov x4, 425
     bl rectangulo
     
 loopMain:
@@ -183,7 +255,7 @@ loop0:
 
     // EDIFICIO 2
     mov x3, x24
-    mov x4, 132 // y edif
+    mov x4, 130 // y edif
     mov x5, 200
     mov x6, 100
     bl rectangulo
@@ -217,7 +289,7 @@ loop0:
 
     // ------------ AUTO ROSA ------------
     mov x3, x22  
-    mov x4, 299 // y AUTO
+    mov x4, 290 // y AUTO
     mov x5, 35 //alt 
     mov x6, 120 // ancho
  
@@ -225,9 +297,25 @@ loop0:
     movk x10, 0x66ff, lsl 0 // color
     bl rectangulo
 
+    //PARTE ALTA AUTO
+    add x3, x22, 30  
+    mov x4, 260 // y AUTO
+    mov x5, 10 //alt 
+    mov x6, 60 // ancho
+    bl rectangulo
+
+    add x3, x22, 20
+    mov x5, 30
+    mov x6, 10
+    bl rectangulo
+
+    add x3, x22, 90
+    bl rectangulo
+    
+
     // ----------- RUEDAS --------------
     add x3, x25, 10
-    mov x4, 330 // y rueda1
+    mov x4, 320 // y rueda1
     mov x5, 15 // alto
     //mov x6, 25 // ancho
     movz x10, 0x00, lsl 16 // color
@@ -236,7 +324,7 @@ loop0:
 
     // rueda2
     add x3, x26, 15
-    mov x4, 330 // y rueda1
+    mov x4, 320 // y rueda1
     mov x5, 15 // alto
     //mov x6, 25 // ancho
     bl circulo
@@ -263,14 +351,12 @@ loop0:
 
     
     sub x21, x21, 1   // cambiar posicion arbol
-    add x22, x22, 4   // " " " auto
+    add x22, x22, 5   // " " " auto
     sub x23, x23, 1   // "" "" edificio1
     sub x24, x24, 1   // edif 2
-    add x25, x25, 4   // avanzan rueda1
-    add x26, x26, 4   // ""     rueda2
+    add x25, x25, 5   // avanzan rueda1
+    add x26, x26, 5   // ""     rueda2
     sub x27, x27, 1   // "" hojas
-    
-
 
     cmp x23, 0 // reset si edificio1 llega a 0
     bgt fin_edificio1
