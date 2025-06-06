@@ -57,7 +57,7 @@ loop0:
     mov x2, SCREEN_HEIGH
     mov x3, 0
     mov x4, 319
-    mov x5, 179
+    mov x5, 80
     mov x6, 640
     movz x10, 0x80, lsl 16 // color
     movk x10, 0xff00, lsl 0
