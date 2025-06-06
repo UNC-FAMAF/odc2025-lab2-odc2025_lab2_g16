@@ -12,4 +12,4 @@ Descripción ejercicio 2: La animacion es un auto moviendose en un parque.
 
 
 Justificación instrucciones ARMv8:
-Todas las instrucciones utilizadas estan en el manual  de ARMv8.
+Utilizamos la instruccion 'ret' que no vimos en LEGv8, sin embargo esta en el manual de ARMv8 y nos resulto util.
