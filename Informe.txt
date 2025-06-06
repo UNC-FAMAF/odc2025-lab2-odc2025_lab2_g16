@@ -8,8 +8,8 @@ Integrante 4: Varetto Mateo
 Descripción ejercicio 1: La imagen estatica es una balanza con dos rombos equilibrados sobre una esfera en la noche. 
 
 
-Descripción ejercicio 2: La animacion es un auto moviendose en un parque
+Descripción ejercicio 2: La animacion es un auto moviendose en un parque.
 
 
 Justificación instrucciones ARMv8:
-Todas las instrucciones utilizadas estan en el manual  de ARMv8
+Todas las instrucciones utilizadas estan en el manual  de ARMv8.
