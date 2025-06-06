@@ -62,6 +62,9 @@ loop0:
     movz x10, 0x80, lsl 16 // color
     movk x10, 0xff00, lsl 0
     bl rectangulo
+
+    mov x5, 179
+    bl rectangulo
     
     // EDIFICIO 
     mov x3, x23
