@@ -8,8 +8,8 @@ Integrante 4: Varetto Mateo
 Descripción ejercicio 1: La imagen estatica es una balanza con dos rombos equilibrados sobre una esfera en la noche. 
 
 
-Descripción ejercicio 2: La animacion es un auto moviendose en un parque.
+Descripción ejercicio 2: La animacion es un auto pasando por delante de 2 edificios y detras de un arbol.
 
 
 Justificación instrucciones ARMv8:
-Utilizamos la instruccion 'ret' que no vimos en LEGv8, sin embargo esta en el manual de ARMv8 y nos resulto util.
+

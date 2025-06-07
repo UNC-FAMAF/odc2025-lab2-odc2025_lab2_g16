@@ -32,7 +32,16 @@ odc:
 
     bl rectangulo
 
+    movz x10, 0x40, lsl 16
+    movk x10, 0x4040, lsl 0
+    mov x3, 0
+    mov x4, 380
+    mov x5, 20
+    mov x6, 640
+    bl rectangulo
+
     // O   parte afuera
+    movz x10, 0x0000, lsl 16
     movk x10, 0x4444, lsl 0
     mov x3, 15
     mov x4, 410

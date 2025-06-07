@@ -480,4 +480,4 @@ rectangulo_largo_loop:
   add x22, x22, 1
   cmp x22, x23
   ble seteo_direccion
-  ret
+  br x30
